@@ -48,6 +48,7 @@ public class LifeWorld extends JPanel implements Runnable{
 
     }
     public void run(){
+        long init = System.currentTimeMillis();
         long last = System.currentTimeMillis();
         long current;
         while(fr.isVisible()){
@@ -57,6 +58,9 @@ public class LifeWorld extends JPanel implements Runnable{
                 if(current - last >= (1000/FPS)){
                     repaint();
                     last = current;
+                }
+                if(step% 100 == 0){
+                    System.out.println(System.currentTimeMillis() - init);
                 }
             }
 

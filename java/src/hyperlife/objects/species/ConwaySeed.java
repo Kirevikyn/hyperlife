@@ -42,7 +42,6 @@ public class ConwaySeed extends Seed {
 
         surroundings.put(RADIUS,RADIUS,new ConwayPlant());
         surroundings.put(RADIUS,RADIUS,new ConwaySeed());
-        System.out.println(surroundings.get(RADIUS,RADIUS).contains(new ConwaySeed()));
     }
     public int getGrowthRadius(){
         return RADIUS;
