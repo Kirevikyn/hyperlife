@@ -60,8 +60,13 @@ public class LifeWorld extends JPanel implements Runnable{
         JButton clear = new JButton("CLEAR");
         clear.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
+                boolean holdp = paused;
+                paused = true;
                 resetGrid();
+                plantSeeds();
+                update();
                 repaint();
+                paused = holdp;
             }
         });
         JButton reset = new JButton("RESET");
@@ -70,6 +75,7 @@ public class LifeWorld extends JPanel implements Runnable{
                 boolean holdp = paused;
                 paused = true;
                 resetGrid();
+                plantSeeds();
                 populateWorld();
                 update();
                 repaint();
@@ -96,7 +102,7 @@ public class LifeWorld extends JPanel implements Runnable{
         for(int i = 0;i<species.length;i++){
             names[i] = species[i].getSimpleName();
         }
-        JComboBox<Class> cursorSelector = new JComboBox<Class>();
+        JComboBox<String> cursorSelector = new JComboBox<String>(names);
         cursorSelector.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -161,6 +167,9 @@ public class LifeWorld extends JPanel implements Runnable{
         fr.add(this,c2);
         fr.pack();
         fr.setVisible(true);
+
+
+        plantSeeds();
         populateWorld();
 
     }
@@ -195,7 +204,6 @@ public class LifeWorld extends JPanel implements Runnable{
             for(int j = 0;j<even.height;j++){
                 if(r.nextDouble() > .5){
                     even.put(i,j,new ConwayPlant());
-
                 }
                 if(r.nextDouble() > .9995){
                     even.put(i,j,new ConwayHerbivore());
@@ -203,7 +211,14 @@ public class LifeWorld extends JPanel implements Runnable{
                 if(r.nextDouble() > .9990){
                     even.put(i,j,new WeakPredator());
                 }
-                even.put(i,j,new ConwaySeed());
+
+            }
+        }
+    }
+    public synchronized void plantSeeds(){
+        for(int i = 0;i<even.width;i++){
+            for (int j = 0; j < even.height; j++) {
+                even.put(i, j, new ConwaySeed());
             }
         }
     }
