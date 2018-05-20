@@ -42,6 +42,7 @@ More documentation coming soon<sup>tm</sup>
 * Make a way for plants to grow into more than 1 pixel
 * Add mouse option to redraw pixels of choice
 * Add generation jump to skip rendering for some number of generations
+* Add 'RelativeGrid' class extension of LifeGrid to make it explicit for passing 'surroundings' that the point of reference is in the center
 * Mechanics
     * Add animal/plant realtionships to model bees/flowers
     * Add a seed that has to be composted by Dung before it can grow

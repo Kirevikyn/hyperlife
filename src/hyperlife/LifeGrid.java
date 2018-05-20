@@ -12,14 +12,16 @@ public class LifeGrid {
     private boolean CARCASSES_ENABLE = true;
     static int DEFAULT_WIDTH = 250;
     static int DEFAULT_HEIGHT = 250;
-    public final int width,height;
+    public final int width,height, radius;
     private Object[][] grid;
     public LifeGrid(){
         this(DEFAULT_WIDTH,DEFAULT_HEIGHT);
     }
     public LifeGrid(int width,int height){
+
         this.width = width;
         this.height = height;
+        this.radius = (width-1)/2;
         grid = new ArrayList[width][height];
         for(int i = 0;i<width;i++){
             for(int j = 0;j<height;j++){
@@ -33,6 +35,7 @@ public class LifeGrid {
     public LifeGrid(LifeGrid refGrid, int radius, int x, int y){
         this.width = radius*2+1;
         this.height = radius*2+1;
+        this.radius = radius;
         grid = new ArrayList[width][height];
         for(int i = -radius;i<radius+1;i++){
             for(int j = -radius;j<radius+1;j++){

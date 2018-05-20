@@ -5,6 +5,7 @@ import hyperlife.objects.LifeObject;
 import hyperlife.objects.Predator;
 
 import java.awt.*;
+import java.util.Random;
 
 public class WeakPredator extends Predator {
     public WeakPredator(){
@@ -20,6 +21,9 @@ public class WeakPredator extends Predator {
             health += 120;
         }else if(l instanceof Carcass){
             health += 60;
+        }
+        if(new Random().nextDouble() > .66){
+            return new ConwayOrchid();
         }
         return null;
     }

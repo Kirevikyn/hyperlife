@@ -73,7 +73,7 @@ public class LifeWorld extends JPanel implements Runnable{
                 if(r.nextDouble() > .9995){
                     even.put(i,j,new ConwayHerbivore());
                 }
-                if(r.nextDouble() > .9995){
+                if(r.nextDouble() > .9990){
                     even.put(i,j,new WeakPredator());
                 }
                 even.put(i,j,new ConwaySeed());
