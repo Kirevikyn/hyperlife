@@ -13,10 +13,10 @@ public abstract class Animal extends LifeForm{
         super();
         radius = 2;
         switch(new Random().nextInt(4)){
-            case 0: deltaX = getCurve(); deltaY = 0; break;
-            case 1: deltaX = -getCurve(); deltaY = 0; break;
-            case 2: deltaX = 0; deltaY = getCurve(); break;
-            case 3: deltaX = 0; deltaY = -getCurve(); break;
+            case 0: deltaX = 1; deltaY = 0; break;
+            case 1: deltaX = -1; deltaY = 0; break;
+            case 2: deltaX = 0; deltaY = 1; break;
+            case 3: deltaX = 0; deltaY = -1; break;
         }
     }
     /**
@@ -33,7 +33,6 @@ public abstract class Animal extends LifeForm{
         return false;
     }
     public abstract Class[] getFoodTypes();
-    public abstract int getCurve();
     protected Action getDirection(int deltaX, int deltaY){
         if(deltaX == 0 && deltaY == 0) {
             return Action.NOTHING;
@@ -69,23 +68,13 @@ public abstract class Animal extends LifeForm{
             //normalizeDeltas();
         }else if(surroundings.isWall(deltaX + (surroundings.width-1)/2,deltaY + (surroundings.height-1)/2)){
             switch(new Random().nextInt(4)){
-                case 0: deltaX = getCurve(); deltaY = 0; break;
-                case 1: deltaX = -getCurve(); deltaY = 0; break;
-                case 2: deltaX = 0; deltaY = getCurve(); break;
-                case 3: deltaX = 0; deltaY = -getCurve(); break;
+                case 0: deltaX = 1; deltaY = 0; break;
+                case 1: deltaX = -1; deltaY = 0; break;
+                case 2: deltaX = 0; deltaY = 1; break;
+                case 3: deltaX = 0; deltaY = -1; break;
             }
         }
         return getDirection(deltaX,deltaY);
-    }
-    protected void normalizeDeltas(){
-        int maxDelta = (deltaX > deltaY)? deltaX : deltaY;
-        maxDelta = Math.abs(maxDelta);
-        maxDelta = (getCurve() > maxDelta)? maxDelta : getCurve();
-        if(maxDelta == 0){
-            return;
-        }
-        deltaX = deltaX/maxDelta;
-        deltaY = deltaY/maxDelta;
     }
     //randomly picks between two Actions
     private Action rpick(Action a1, Action a2){

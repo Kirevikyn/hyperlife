@@ -15,9 +15,6 @@ public class WeakPredator extends Predator {
     public Color getColor(){
         return Color.ORANGE;
     }
-    public int getCurve(){
-        return 2;
-    }
     public LifeObject consume(LifeObject l) {
         if(l instanceof Herbivore){
             health += 120;

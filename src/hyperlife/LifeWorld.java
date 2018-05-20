@@ -35,7 +35,8 @@ public class LifeWorld extends JPanel implements Runnable{
         even = new LifeGrid(width,height);
         img = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
         fr = new JFrame();
-        fr.setPreferredSize(new Dimension(width+30,height+50));
+        fr.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+        fr.setMaximumSize(new Dimension(width+30,height+50));
         fr.add(this);
         fr.pack();
         fr.setVisible(true);
@@ -70,6 +71,7 @@ public class LifeWorld extends JPanel implements Runnable{
             }
         }
     }
+
     private void update(){
         //System.out.println("updating " + step);
         if(step % 2 == 0){
@@ -80,6 +82,7 @@ public class LifeWorld extends JPanel implements Runnable{
         }
         step++;
     }
+
     @Override
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
@@ -91,11 +94,10 @@ public class LifeWorld extends JPanel implements Runnable{
         }
         g.drawImage(img,0,0,this);
     }
+
+
     public static void main(String[] args){
         new LifeWorld(300,300).run();
     }
-
-
-
 
 }

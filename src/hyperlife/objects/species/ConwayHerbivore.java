@@ -10,9 +10,6 @@ public class ConwayHerbivore extends Herbivore{
         super();
         health = 30;
     }
-    public int getCurve(){
-        return 3;
-    }
     public Class[] getFoodTypes(){
         return new Class[]{ConwayPlant.class};
     }

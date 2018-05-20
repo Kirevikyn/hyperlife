@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LifeGrid {
+    private boolean CARCASSES_ENABLE = false;
     static int DEFAULT_WIDTH = 250;
     static int DEFAULT_HEIGHT = 250;
     public final int width,height;
@@ -183,7 +184,7 @@ public class LifeGrid {
                         if (!((LifeForm) l).isAlive()) {
                             objs.remove(ind);
                             ind--;
-                            if(l instanceof Animal && false){//optionally add a carcass
+                            if(l instanceof Animal && CARCASSES_ENABLE){//optionally add a carcass
                                 objs.add(objs.size()-1,new Carcass());
                                 ind++;
                             }

@@ -11,6 +11,8 @@ Every cycle, every LifeForms updates
 * Animals
     * can move
     * can consume other LifeObjects
+        * can produce waste after consuming another LifeObject
+    * can reproduce
 * Plants
     * can't move
     * Seeds grow into plants based on conditions
