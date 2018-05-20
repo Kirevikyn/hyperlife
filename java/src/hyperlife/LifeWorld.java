@@ -1,12 +1,15 @@
 package hyperlife;
 
 import hyperlife.objects.LifeObject;
+import hyperlife.objects.Seed;
 import hyperlife.objects.species.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.TimerTask;
 
@@ -31,10 +34,24 @@ public class LifeWorld extends JPanel implements Runnable{
     private final int IMAGE_SCALAR = 3;
     private final int FPS = 60;
     private boolean paused;
-    private final Class[] species = {Carcass.class, ConwayOrchid.class, ConwayHerbivore.class, ConwayPlant.class, Dung.class, WeakPredator.class};
-    private Class cursor = ConwayPlant.class;
+    private static final Class[] species;
+    private Class cursor;
     private final int width,height;
+    static{
+        String packageName = "hyperlife/objects/species";
 
+        File[] speciesFiles = new File("src/" + packageName).listFiles();
+        System.out.println(speciesFiles.length);
+        Class[] spec = new Class[speciesFiles.length];
+        try {
+            for (int i = 0; i < speciesFiles.length; i++) {
+                spec[i] = Class.forName(packageName.replace("/", ".") + "." + speciesFiles[i].getName().replace(".java",""));
+                System.out.println(spec[i].getName());
+            }
+
+        }catch(Exception e){}
+        species = spec;
+    }
 
     public LifeWorld(){
         this(LifeGrid.DEFAULT_WIDTH,LifeGrid.DEFAULT_WIDTH);
@@ -98,6 +115,9 @@ public class LifeWorld extends JPanel implements Runnable{
             }
         });
 
+
+
+        cursor = species[0];
         String[] names = new String[species.length];
         for(int i = 0;i<species.length;i++){
             names[i] = species[i].getSimpleName();
@@ -216,11 +236,21 @@ public class LifeWorld extends JPanel implements Runnable{
         }
     }
     public synchronized void plantSeeds(){
-        for(int i = 0;i<even.width;i++){
-            for (int j = 0; j < even.height; j++) {
-                even.put(i, j, new ConwaySeed());
+        ArrayList<Class> seeds = new ArrayList<Class>();
+        for(Class cl: species){
+            if(cl.getSimpleName().toUpperCase().contains("SEED")){
+                seeds.add(cl);
             }
         }
+        try {
+            for (int i = 0; i < even.width; i++) {
+                for (int j = 0; j < even.height; j++) {
+                    for (Class cl : seeds) {
+                        even.put(i,j,(LifeObject)cl.newInstance());
+                    }
+                }
+            }
+        }catch(Exception e){}
     }
     private void update(){
         //System.out.println("updating " + step);

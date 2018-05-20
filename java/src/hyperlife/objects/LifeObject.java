@@ -53,24 +53,24 @@ public abstract class LifeObject {
             return null;
         }
 
-        //ArrayList<Integer> xcd = new ArrayList<Integer>();
-        //ArrayList<Integer> ycd = new ArrayList<Integer>();
+        ArrayList<Integer> xcd = new ArrayList<Integer>();
+        ArrayList<Integer> ycd = new ArrayList<Integer>();
         for(int r = 1;r<=xrad;r++){
             for(int i = -r;i<=r;i++){
                 for(int j = -r;j<=r;j++){
                     if(containsClass(surroundings.get(i+xrad,j+yrad),cl)){
-                        //xcd.add(i);
-                        //ycd.add(j);
-                        return new Pair<Integer,Integer>(i,j);
+                        xcd.add(i);
+                        ycd.add(j);
+                        //return new Pair<Integer,Integer>(i,j);
                     }
                 }
             }
-            /*
+
             if(xcd.size() != 0){
                 int ind = new Random().nextInt(xcd.size());
                 return new Pair<Integer,Integer>(xcd.get(ind),ycd.get(ind));
             }
-            */
+
         }
         return null;
     }
