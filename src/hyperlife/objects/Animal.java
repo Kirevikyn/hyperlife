@@ -37,7 +37,7 @@ public abstract class Animal extends LifeForm{
         if(deltaX == 0 && deltaY == 0) {
             return Action.NOTHING;
         }
-        double angle = (Math.atan2(deltaY,deltaX) * 180 / Math.PI);
+        double angle = (Math.atan2(-deltaY,deltaX) * 180 / Math.PI);
         if(angle < 0.0){
             angle = 360.0 + angle;
         }
@@ -53,10 +53,14 @@ public abstract class Animal extends LifeForm{
             return Action.DOWN;
         if(angle == 315)
             return rpick(Action.DOWN,Action.RIGHT);
-        if(angle > 315 || angle <45)
+        if(angle > 315 || angle < 45)
             return Action.RIGHT;
         if(angle == 45)
             return rpick(Action.RIGHT,Action.UP);
+
+
+
+        System.out.println("defaulting to Action.Nothing");
         return Action.NOTHING;
     }
     public Action update(LifeGrid surroundings){
@@ -66,7 +70,15 @@ public abstract class Animal extends LifeForm{
             deltaX = nearest.getKey();
             deltaY = nearest.getValue();
             //normalizeDeltas();
-        }else if(surroundings.isWall(deltaX + (surroundings.width-1)/2,deltaY + (surroundings.height-1)/2)){
+        }else if(surroundings.isWall(deltaX + (surroundings.width-1)/2,deltaY + (surroundings.height-1)/2)){//TODO - MAKE IT MOVE ALONG WALL
+            switch(new Random().nextInt(4)){
+                case 0: deltaX = 1; deltaY = 0; break;
+                case 1: deltaX = -1; deltaY = 0; break;
+                case 2: deltaX = 0; deltaY = 1; break;
+                case 3: deltaX = 0; deltaY = -1; break;
+            }
+        }else if(nearest == null && deltaX == 0 && deltaY == 0){
+
             switch(new Random().nextInt(4)){
                 case 0: deltaX = 1; deltaY = 0; break;
                 case 1: deltaX = -1; deltaY = 0; break;

@@ -8,6 +8,7 @@ import hyperlife.objects.Seed;
 import java.awt.*;
 
 public class ConwaySeed extends Seed {
+    private final int RADIUS = 1;
     public Color getColor(){
         return Color.WHITE;
     }
@@ -36,5 +37,14 @@ public class ConwaySeed extends Seed {
         }else{
             return Action.NOTHING;
         }
+    }
+    public void grow(LifeGrid surroundings){
+
+        surroundings.put(RADIUS,RADIUS,new ConwayPlant());
+        surroundings.put(RADIUS,RADIUS,new ConwaySeed());
+        System.out.println(surroundings.get(RADIUS,RADIUS).contains(new ConwaySeed()));
+    }
+    public int getGrowthRadius(){
+        return RADIUS;
     }
 }

@@ -1,7 +1,9 @@
 package hyperlife;
 
+import hyperlife.objects.species.ConwayHerbivore;
 import hyperlife.objects.species.ConwayPlant;
 import hyperlife.objects.species.ConwaySeed;
+import hyperlife.objects.species.WeakPredator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,6 +28,8 @@ public class LifeWorld extends JPanel implements Runnable{
     private LifeGrid odd;
     private LifeGrid even;
     private int step;
+    private final int IMAGE_SCALAR = 3;
+    private final int FPS = 60;
     public LifeWorld(){
         this(LifeGrid.DEFAULT_WIDTH,LifeGrid.DEFAULT_WIDTH);
     }
@@ -33,10 +37,10 @@ public class LifeWorld extends JPanel implements Runnable{
         step = 0;
         odd = new LifeGrid(width,height);
         even = new LifeGrid(width,height);
-        img = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
+        img = new BufferedImage(width*IMAGE_SCALAR,height*IMAGE_SCALAR,BufferedImage.TYPE_INT_ARGB);
         fr = new JFrame();
-        fr.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-        fr.setMaximumSize(new Dimension(width+30,height+50));
+        //fr.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+        fr.setPreferredSize(new Dimension(width*IMAGE_SCALAR+30,height*IMAGE_SCALAR+50));
         fr.add(this);
         fr.pack();
         fr.setVisible(true);
@@ -45,10 +49,15 @@ public class LifeWorld extends JPanel implements Runnable{
     }
     public void run(){
         long last = System.currentTimeMillis();
+        long current;
         while(fr.isVisible()){
             if(fr.isActive()){
+                current = System.currentTimeMillis();
                 update();
-                repaint();
+                if(current - last >= (1000/FPS)){
+                    repaint();
+                    last = current;
+                }
             }
 
         }
@@ -62,10 +71,10 @@ public class LifeWorld extends JPanel implements Runnable{
 
                 }
                 if(r.nextDouble() > .9995){
-                    //even.put(i,j,new ConwayHerbivore());
+                    even.put(i,j,new ConwayHerbivore());
                 }
-                if(r.nextDouble() > .993){
-                    //even.put(i,j,new WeakPredator());
+                if(r.nextDouble() > .9995){
+                    even.put(i,j,new WeakPredator());
                 }
                 even.put(i,j,new ConwaySeed());
             }
@@ -75,10 +84,10 @@ public class LifeWorld extends JPanel implements Runnable{
     private void update(){
         //System.out.println("updating " + step);
         if(step % 2 == 0){
-            odd.grow(even);
+            odd.step(even);
         }
         else{
-            even.grow(odd);
+            even.step(odd);
         }
         step++;
     }
@@ -97,7 +106,7 @@ public class LifeWorld extends JPanel implements Runnable{
 
 
     public static void main(String[] args){
-        new LifeWorld(300,300).run();
+        new LifeWorld(200,200).run();
     }
 
 }

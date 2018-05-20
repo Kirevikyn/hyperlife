@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LifeGrid {
-    private boolean CARCASSES_ENABLE = false;
+    private boolean CARCASSES_ENABLE = true;
     static int DEFAULT_WIDTH = 250;
     static int DEFAULT_HEIGHT = 250;
     public final int width,height;
@@ -26,6 +26,9 @@ public class LifeGrid {
                 grid[i][j] = new ArrayList<LifeObject>();
             }
         }
+    }
+    public LifeGrid(int radius){
+        this(radius*2+1, radius*2+1);
     }
     public LifeGrid(LifeGrid refGrid, int radius, int x, int y){
         this.width = radius*2+1;
@@ -86,7 +89,11 @@ public class LifeGrid {
                     put(x+1,y,l);
                 break;
             case GROW:
+                if(l instanceof Plant){
+                    ((Plant) l).grow(new LifeGrid(this,((Plant) l).getGrowthRadius(),x,y));
+                }
 
+                /*
                 if(l instanceof Seed){
                     try {
                         String plantClassName = l.getClass().getName().replace("Seed", "Plant");
@@ -98,7 +105,7 @@ public class LifeGrid {
                     catch(Exception e){
                         e.printStackTrace();
                     }
-                }
+                }*/
                 break;
             default:
                 put(x,y,l);
@@ -110,6 +117,23 @@ public class LifeGrid {
     }
     public void remove(int x, int y, LifeObject l){
         get(x,y).remove(l);
+    }
+
+    /**
+     * merges as much of l into this grid as possible, placing the topleft corner of that grid at a position on this grid specified by x,y
+     * @param l
+     * @param x
+     * @param y
+     */
+    public void mergeFrom(LifeGrid l, int x, int y){
+        for(int i = x;i<width && i-x<l.width;i++){
+            for(int j = y;j<height && j-y<l.height;j++){
+                List<LifeObject> objs = get(i,j);
+                for(LifeObject lo: l.get(i-x,j-y)){
+                    objs.add(lo);
+                }
+            }
+        }
     }
     //adds all LifeObjects in this grid to another grid and removes objects in this grid
     public void flushInto(LifeGrid l){
@@ -126,7 +150,7 @@ public class LifeGrid {
             }
         }
     }
-    public synchronized void grow(LifeGrid in){
+    public synchronized void step(LifeGrid in){
         if(in.width != width || in.height != height){
             System.out.println("Invalid growth. Sizes don't match.");
             return;
@@ -137,7 +161,7 @@ public class LifeGrid {
                 set(i, j, new ArrayList<LifeObject>());
             }
         }
-        //place all lifeforms where they want to be
+        //place all lifeforms where they want to be in the new grid
         for(int i = 0;i<width;i++){
             for(int j = 0;j<height;j++){
                 for(LifeObject l: in.get(i,j)){
@@ -156,14 +180,13 @@ public class LifeGrid {
         for(int i = 0;i<width;i++){
             for(int j = 0;j<height;j++){
                 List<LifeObject> objs = get(i,j);
-
                 int ind = 0;
                 while (ind < objs.size()) {
                     LifeObject l = objs.get(ind);
                     if (l instanceof LifeForm) {
                         if(l instanceof Animal) {
                             for (LifeObject lo : objs) {
-                                if (lo != l && ((Animal) l).wantsToConsume(lo)) {
+                                if (lo != l && ((Animal) l).wantsToConsume(lo) && (!(lo instanceof LifeForm) || ((LifeForm) lo).isAlive())){
                                     LifeObject poop = ((Animal) l).consume(lo);
                                     objs.remove(lo);
                                     ind--;
@@ -196,18 +219,29 @@ public class LifeGrid {
         }
     }
     synchronized void drawImage(BufferedImage img){
+        int scalar = img.getWidth()/width;
+        int scalarY = img.getHeight()/height;
+        if(scalarY!=scalar){
+            scalar = 1;
+        }
+
         for(int i = 0;i<width;i++) {
             for (int j = 0; j < height; j++) {
-                img.setRGB(i,j, Color.WHITE.getRGB());
-                List<LifeObject> objs = get(i,j);
-                if(objs.size() > 0){
-                    for(LifeObject l: objs){
-                        if(!(l instanceof Seed)){
-                            img.setRGB(i,j,l.getColor().getRGB());
-                            break;
+                for(int i2 = i*scalar;i2<i*scalar+scalar;i2++){
+                    for(int j2 = j*scalar;j2<j*scalar+scalar;j2++){
+                        img.setRGB(i2,j2, Color.WHITE.getRGB());
+                        List<LifeObject> objs = get(i,j);
+                        if(objs.size() > 0){
+                            for(LifeObject l: objs){
+                                if(!(l instanceof Seed)){
+                                    img.setRGB(i2,j2,l.getColor().getRGB());
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
+
             }
         }
     }

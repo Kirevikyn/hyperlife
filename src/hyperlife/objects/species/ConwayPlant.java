@@ -33,4 +33,8 @@ public class ConwayPlant extends Plant{
 
         return Action.NOTHING;
     }
+    public void grow(LifeGrid surroundings){}
+    public int getGrowthRadius(){
+        return 0;
+    }
 }
