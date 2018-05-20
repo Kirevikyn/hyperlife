@@ -1,5 +1,5 @@
 package hyperlife;
 
 public enum Action {
-    UP,DOWN,LEFT,RIGHT,NOTHING,GROW
+    UP,DOWN,LEFT,RIGHT,NOTHING,GROW,REMOVE
 }

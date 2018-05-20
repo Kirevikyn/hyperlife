@@ -93,12 +93,13 @@ public class LifeGrid {
                 if(l instanceof Plant){
                     ((Plant) l).grow(new LifeGrid(this,((Plant) l).getGrowthRadius(),x,y));
                 }
-
-
                 break;
-            default:
+            case NOTHING:
                 put(x,y,l);
                 break;
+            case REMOVE:
+            default:
+                //do nothing
         }
     }
     public void set(int x, int y, List<LifeObject> ls){
@@ -162,7 +163,7 @@ public class LifeGrid {
                                     objs.remove(lo);
                                     ind--;
                                     if(poop != null){
-                                        objs.add(objs.size()-1,poop);
+                                        objs.add(poop);
                                         ind++;
                                     }
                                     break;
@@ -170,7 +171,7 @@ public class LifeGrid {
                             }
                             if(((Animal) l).reproduce()){
                                 try {
-                                    objs.add(objs.size() - 1, l.getClass().newInstance());
+                                    objs.add(l.getClass().newInstance());
                                 }catch(Exception e){}
                                 ind++;
                             }
@@ -179,7 +180,7 @@ public class LifeGrid {
                             objs.remove(ind);
                             ind--;
                             if(l instanceof Animal && CARCASSES_ENABLE){//optionally add a carcass
-                                objs.add(objs.size()-1,new Carcass());
+                                objs.add(new Carcass());
                                 ind++;
                             }
                         }

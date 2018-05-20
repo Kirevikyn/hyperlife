@@ -6,9 +6,16 @@ import hyperlife.objects.LifeObject;
 import java.awt.*;
 
 public class ConwayHerbivore extends Herbivore{
+    private static final int HEALTH = 100;
+    private static final int RADIUS = 2;
+    private static final int CONWAY_PLANT_NUTRIENTS = 30;
+
+
+
     public ConwayHerbivore(){
         super();
-        health = 30;
+        health = HEALTH;
+        radius = RADIUS;
     }
     public Class[] getFoodTypes(){
         return new Class[]{ConwayPlant.class};
@@ -18,13 +25,13 @@ public class ConwayHerbivore extends Herbivore{
     }
     public LifeObject consume(LifeObject l){
         if(l instanceof ConwayPlant){
-            health += 30;
+            health += CONWAY_PLANT_NUTRIENTS;
         }
         return null;
     }
     public boolean reproduce(){
-        if(health > 200){
-            health -= 50;
+        if(health > HEALTH*5){
+            health -= HEALTH;
             return true;
         }
         return false;

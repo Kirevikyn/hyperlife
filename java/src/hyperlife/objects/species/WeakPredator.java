@@ -8,21 +8,28 @@ import java.awt.*;
 import java.util.Random;
 
 public class WeakPredator extends Predator {
+    private static final int HEALTH = 200;
+    private static final int RADIUS = 2;
+    private static final int HERBIVORE_NUTRIENTS = 120;
+    private static final int CARCASS_NUTRIENTS = 60;
+    private static final double POOP_CHANCE = .33;
+
+
     public WeakPredator(){
         super();
-        radius = 2;
-        health = 100;
+        radius = RADIUS;
+        health = HEALTH;
     }
     public Color getColor(){
         return Color.RED;
     }
     public LifeObject consume(LifeObject l) {
         if(l instanceof Herbivore){
-            health += 120;
+            health += HERBIVORE_NUTRIENTS;
         }else if(l instanceof Carcass){
-            health += 60;
+            health += CARCASS_NUTRIENTS;
         }
-        if(new Random().nextDouble() > .66){
+        if(new Random().nextDouble() < POOP_CHANCE){
             return new ConwayOrchid();
         }
         return null;
@@ -31,8 +38,8 @@ public class WeakPredator extends Predator {
         return new Class[]{Herbivore.class,Carcass.class};
     }
     public boolean reproduce(){
-        if(health > 500){
-            health -= 100;
+        if(health > HEALTH*5){
+            health -= HEALTH;
             return true;
         }
         return false;
