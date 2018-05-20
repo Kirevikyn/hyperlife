@@ -12,7 +12,7 @@ public class LifeGrid {
     private boolean CARCASSES_ENABLE = true;
     static int DEFAULT_WIDTH = 250;
     static int DEFAULT_HEIGHT = 250;
-    public final int width,height, radius;
+    public final int width,height;
     private Object[][] grid;
     public LifeGrid(){
         this(DEFAULT_WIDTH,DEFAULT_HEIGHT);
@@ -21,7 +21,6 @@ public class LifeGrid {
 
         this.width = width;
         this.height = height;
-        this.radius = (width-1)/2;
         grid = new ArrayList[width][height];
         for(int i = 0;i<width;i++){
             for(int j = 0;j<height;j++){
@@ -35,7 +34,6 @@ public class LifeGrid {
     public LifeGrid(LifeGrid refGrid, int radius, int x, int y){
         this.width = radius*2+1;
         this.height = radius*2+1;
-        this.radius = radius;
         grid = new ArrayList[width][height];
         for(int i = -radius;i<radius+1;i++){
             for(int j = -radius;j<radius+1;j++){
@@ -96,19 +94,7 @@ public class LifeGrid {
                     ((Plant) l).grow(new LifeGrid(this,((Plant) l).getGrowthRadius(),x,y));
                 }
 
-                /*
-                if(l instanceof Seed){
-                    try {
-                        String plantClassName = l.getClass().getName().replace("Seed", "Plant");
-                        Class plantClass = Class.forName(plantClassName);
-                        put(x,y,l);
-                        put(x, y, (Plant)plantClass.newInstance());
 
-                    }
-                    catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }*/
                 break;
             default:
                 put(x,y,l);
@@ -138,33 +124,14 @@ public class LifeGrid {
             }
         }
     }
-    //adds all LifeObjects in this grid to another grid and removes objects in this grid
-    public void flushInto(LifeGrid l){
-        for(int i = 0;i<width;i++) {
-            for (int j = 0; j < height; j++) {
-                for (LifeObject obj : get(i, j)) {
-                    l.put(i,j,obj);
-                }
-            }
-        }
-        for(int i = 0;i<width;i++){
-            for(int j = 0;j<height;j++){
-                grid[i][j] = new ArrayList<LifeObject>();
-            }
-        }
-    }
-    public synchronized void step(LifeGrid in){
-        if(in.width != width || in.height != height){
-            System.out.println("Invalid growth. Sizes don't match.");
-            return;
-        }
-        //clean the current grid
+    private void cleanGrid(){
         for(int i = 0;i<width;i++) {
             for (int j = 0; j < height; j++) {
                 set(i, j, new ArrayList<LifeObject>());
             }
         }
-        //place all lifeforms where they want to be in the new grid
+    }
+    private void makeMovements(LifeGrid in){
         for(int i = 0;i<width;i++){
             for(int j = 0;j<height;j++){
                 for(LifeObject l: in.get(i,j)){
@@ -179,7 +146,8 @@ public class LifeGrid {
                 }
             }
         }
-        //let lifeforms consume others or let them die if they're outta health. animals reproduce if possible
+    }
+    private void processGrid(){
         for(int i = 0;i<width;i++){
             for(int j = 0;j<height;j++){
                 List<LifeObject> objs = get(i,j);
@@ -220,6 +188,18 @@ public class LifeGrid {
                 }
             }
         }
+    }
+    public synchronized void step(LifeGrid in){
+        if(in.width != width || in.height != height){
+            System.out.println("Invalid growth. Sizes don't match.");
+            return;
+        }
+        //clean the current grid
+        cleanGrid();
+        //place all lifeforms where they want to be in the new grid
+        makeMovements(in);
+        //let lifeforms consume others or let them die if they're outta health. animals reproduce if possible
+        processGrid();
     }
     synchronized void drawImage(BufferedImage img){
         int scalar = img.getWidth()/width;
