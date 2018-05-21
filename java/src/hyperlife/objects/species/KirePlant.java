@@ -39,9 +39,6 @@ public class KirePlant extends Sprout {
     public int getGrowthRadius(){
         return 0;
     }
-    public Class[] getFoodTypes(){return new Class[]{};}
-    public LifeObject consume(LifeObject l){
-        return null;
-    }
+
 
 }

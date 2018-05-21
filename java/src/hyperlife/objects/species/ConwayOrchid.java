@@ -38,8 +38,4 @@ public class ConwayOrchid extends Sprout{
             }
         }
     }
-    public Class[] getFoodTypes(){return new Class[]{};}
-    public LifeObject consume(LifeObject l){
-        return null;
-    }
 }

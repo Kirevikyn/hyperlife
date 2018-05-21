@@ -74,5 +74,8 @@ public abstract class LifeObject {
         }
         return null;
     }
+    public boolean canStack(){
+        return true;
+    }
 
 }

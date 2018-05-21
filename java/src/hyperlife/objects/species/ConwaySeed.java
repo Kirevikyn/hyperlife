@@ -43,8 +43,4 @@ public class ConwaySeed extends Seed {
     public int getGrowthRadius(){
         return RADIUS;
     }
-    public Class[] getFoodTypes(){return new Class[]{};}
-    public LifeObject consume(LifeObject l){
-        return null;
-    }
 }

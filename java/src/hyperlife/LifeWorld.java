@@ -38,10 +38,12 @@ public class LifeWorld extends JPanel implements Runnable{
     private Class cursor;
     private final int width,height;
 
+
     private final int CONWAY_CLEAN = 0;
     private final int CONWAY_ANIMAL = 1;
     private final int KIRE = 2;
-    private final String[] simNames = {"Conway","Conway + Animals","Kire"};
+    private final int BASIC_FLOWER = 3;
+    private final String[] simNames = {"Conway","Conway + Animals","Kire","Flower"};
     private int simulationSetup;
 
 
@@ -246,26 +248,52 @@ public class LifeWorld extends JPanel implements Runnable{
 
     public synchronized void populateWorld(){
         Random r = new Random();
-        for(int i = 0;i<even.width;i++){
-            for(int j = 0;j<even.height;j++){
-                if(r.nextDouble() > .5){
-                    even.put(i,j,new ConwayPlant());
-                }
-                if(r.nextDouble() > .9995){
-                    even.put(i,j,new ConwayHerbivore());
-                }
-                if(r.nextDouble() > .9990){
-                    even.put(i,j,new WeakPredator());
-                }
+        switch(simulationSetup){
+            case CONWAY_ANIMAL:
+                for(int i = 0;i<even.width;i++){
+                    for(int j = 0;j<even.height;j++){
+                        if(r.nextDouble() > .5){
+                            even.put(i,j,new ConwayPlant());
+                        }
+                        if(r.nextDouble() > .9995){
+                            even.put(i,j,new ConwayHerbivore());
+                        }
+                        if(r.nextDouble() > .9990){
+                            even.put(i,j,new WeakPredator());
+                        }
 
-            }
+                    }
+                }
+                break;
+            case CONWAY_CLEAN:
+                for(int i = 0;i<even.width;i++){
+                    for(int j = 0;j<even.height;j++){
+                        if(r.nextDouble() > .5){
+                            even.put(i,j,new ConwayPlant());
+                        }
+                    }
+                }
+                break;
+            case KIRE:
+                break;
+            case BASIC_FLOWER:
+                for(int i = 0;i<even.width;i++){
+                    for(int j = 0;j<even.height;j++){
+                        if(r.nextDouble() > .95){
+                            even.put(i,j,new BasicSeed());
+                        }
+                    }
+                }
         }
+
     }
     public Class getSeedType(int simMode){
         switch(simMode){
             case CONWAY_ANIMAL:
             case CONWAY_CLEAN:
                 return ConwaySeed.class;
+            case BASIC_FLOWER:
+                return null;
             case KIRE:
             default:
                 return KireSeed.class;
@@ -275,6 +303,9 @@ public class LifeWorld extends JPanel implements Runnable{
         plantSeeds(getSeedType(simulationSetup));
     }
     public synchronized void plantSeeds(Class cl){
+        if(cl == null){
+            return;
+        }
         try {
             for (int i = 0; i < even.width; i++) {
                 for (int j = 0; j < even.height; j++) {

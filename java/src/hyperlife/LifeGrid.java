@@ -60,7 +60,9 @@ public class LifeGrid {
         return false;
     }
     public void put(int x, int y, LifeObject l){
-        ((List<LifeObject>)grid[x][y]).add(l);
+        if(l.canStack() || (!l.canStack() && !contains(x,y,l.getClass()))) {
+            ((List<LifeObject>) grid[x][y]).add(l);
+        }
     }
     //a variation of put that places the lifeform at a position with a movement being considered
     public void move(int x, int y, LifeObject l, Action a){
@@ -90,8 +92,8 @@ public class LifeGrid {
                     put(x+1,y,l);
                 break;
             case GROW:
-                if(l instanceof Plant){
-                    ((Plant) l).grow(new LifeGrid(this,((Plant) l).getGrowthRadius(),x,y));
+                if(l instanceof Plant && (l.canStack() || (!l.canStack() && !contains(x,y,l.getClass())))){
+                    ((Plant) l).grow(new LifeGrid(this, ((Plant) l).getGrowthRadius(), x, y));
                 }
                 break;
             case NOTHING:
@@ -102,13 +104,14 @@ public class LifeGrid {
                 //do nothing
         }
     }
-    public void set(int x, int y, List<LifeObject> ls){
-        grid[x][y] = ls;
+    public boolean contains(int x, int y, Class cl){
+        for(LifeObject lo: get(x,y)){
+            if(lo.getClass().equals(cl)){
+                return true;
+            }
+        }
+        return false;
     }
-    public void remove(int x, int y, LifeObject l){
-        get(x,y).remove(l);
-    }
-
     /**
      * merges as much of l into this grid as possible, placing the topleft corner of that grid at a position on this grid specified by x,y
      * @param l
@@ -128,11 +131,11 @@ public class LifeGrid {
     private void cleanGrid(){
         for(int i = 0;i<width;i++) {
             for (int j = 0; j < height; j++) {
-                set(i, j, new ArrayList<LifeObject>());
+                grid[i][j] = new ArrayList<LifeObject>();
             }
         }
     }
-    private void makeMovements(LifeGrid in){
+    private synchronized void makeMovements(LifeGrid in){
         for(int i = 0;i<width;i++){
             for(int j = 0;j<height;j++){
                 for(LifeObject l: in.get(i,j)){
@@ -153,7 +156,7 @@ public class LifeGrid {
             for(int j = 0;j<height;j++){
                 List<LifeObject> objs = get(i,j);
                 int ind = 0;
-                while (ind < objs.size()) {
+                while (ind < objs.size() && objs.size() > 0) {
                     LifeObject l = objs.get(ind);
                     if (l instanceof LifeForm) {
                         if(l instanceof Consumer) {
@@ -169,6 +172,9 @@ public class LifeGrid {
                                     break;
                                 }
                             }
+                        }
+                        if(ind < 0){
+                            ind = 0;
                         }
                         if(l instanceof Animal && ((Animal) l).reproduce()){
                             try {
