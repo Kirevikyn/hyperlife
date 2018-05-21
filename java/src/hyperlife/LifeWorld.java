@@ -1,7 +1,6 @@
 package hyperlife;
 
 import hyperlife.objects.LifeObject;
-import hyperlife.objects.Seed;
 import hyperlife.objects.species.*;
 
 import javax.swing.*;
@@ -9,9 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Random;
-import java.util.TimerTask;
 
 /**
  * every cycle, every lifeform updates
@@ -259,7 +256,7 @@ public class LifeWorld extends JPanel implements Runnable{
                             even.put(i,j,new ConwayHerbivore());
                         }
                         if(r.nextDouble() > .9990){
-                            even.put(i,j,new WeakPredator());
+                            even.put(i,j,new ConwayPredator());
                         }
 
                     }

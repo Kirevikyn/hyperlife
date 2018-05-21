@@ -7,7 +7,7 @@ import hyperlife.objects.Predator;
 import java.awt.*;
 import java.util.Random;
 
-public class WeakPredator extends Predator {
+public class ConwayPredator extends Predator {
     private static final int HEALTH = 200;
     private static final int RADIUS = 2;
     private static final int HERBIVORE_NUTRIENTS = 120;
@@ -15,7 +15,7 @@ public class WeakPredator extends Predator {
     private static final double POOP_CHANCE = .33;
 
 
-    public WeakPredator(){
+    public ConwayPredator(){
         super();
         radius = RADIUS;
         health = HEALTH;
