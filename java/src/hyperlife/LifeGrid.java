@@ -156,7 +156,7 @@ public class LifeGrid {
                 while (ind < objs.size()) {
                     LifeObject l = objs.get(ind);
                     if (l instanceof LifeForm) {
-                        if(l instanceof Animal) {
+                        if(l instanceof Consumer) {
                             for (LifeObject lo : objs) {
                                 if (lo != l && ((Consumer) l).wantsToConsume(lo) && (!(lo instanceof LifeForm) || ((LifeForm) lo).isAlive())) {
                                     LifeObject poop = ((Consumer) l).consume(lo);

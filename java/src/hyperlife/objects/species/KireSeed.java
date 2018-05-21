@@ -8,7 +8,7 @@ import hyperlife.objects.Sprout;
 
 import java.awt.*;
 
-public class KireSeed extends Sprout {
+public class KireSeed extends Seed {
     private final int RADIUS = 0;
     public KireSeed(){
         super();
