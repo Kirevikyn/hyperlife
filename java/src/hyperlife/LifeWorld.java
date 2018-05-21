@@ -34,13 +34,22 @@ public class LifeWorld extends JPanel implements Runnable{
     private final int IMAGE_SCALAR = 3;
     private final int FPS = 60;
     private boolean paused;
-    private static final Class[] species;
+    private final Class[] species;
     private Class cursor;
     private final int width,height;
-    private int simulationSetup;
-    static{
-        String packageName = "hyperlife/objects/species";
 
+    private final int CONWAY_CLEAN = 0;
+    private final int CONWAY_ANIMAL = 1;
+    private final int KIRE = 2;
+    private final String[] simNames = {"Conway","Conway + Animals","Kire"};
+    private int simulationSetup;
+
+
+    public LifeWorld(){
+        this(LifeGrid.DEFAULT_WIDTH,LifeGrid.DEFAULT_WIDTH);
+    }
+    public LifeWorld(int width, int height){
+        String packageName = "hyperlife/objects/species";
         File[] speciesFiles = new File("src/" + packageName).listFiles();
         Class[] spec = new Class[speciesFiles.length];
         try {
@@ -50,28 +59,20 @@ public class LifeWorld extends JPanel implements Runnable{
 
         }catch(Exception e){}
         species = spec;
-    }
 
-    public LifeWorld(){
-        this(LifeGrid.DEFAULT_WIDTH,LifeGrid.DEFAULT_WIDTH);
-    }
-    public LifeWorld(int width, int height){
         this.width = width;
         this.height = height;
         paused = false;
-        simulationSetup = 0;
+        simulationSetup = CONWAY_CLEAN;
         resetGrid();
 
         fr = new JFrame();
         fr.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-
-
         setPreferredSize(new Dimension(width*IMAGE_SCALAR,height*IMAGE_SCALAR));
-
         GridBagConstraints c2 = new GridBagConstraints();
-
         JPanel toolbar = new JPanel();
+        toolbar.setLayout(new GridBagLayout());
 
         JButton clear = new JButton("CLEAR");
         clear.addActionListener(new ActionListener(){
@@ -127,7 +128,21 @@ public class LifeWorld extends JPanel implements Runnable{
             }
         });
 
-        String[] simNames = {"Conway","Conway + Animals","Kire","Flowers"};
+        JComboBox<String> simSelector = new JComboBox<String>(simNames);
+        simSelector.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                simulationSetup = simSelector.getSelectedIndex();
+                boolean holdp = paused;
+                paused = true;
+                resetGrid();
+                plantSeeds();
+                populateWorld();
+                update();
+                repaint();
+                paused = holdp;
+            }
+        });
 
 
 
@@ -181,10 +196,15 @@ public class LifeWorld extends JPanel implements Runnable{
         addMouseMotionListener(mouse);
 
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0; c.gridy = 0; toolbar.add(clear,c);
-        c.gridx = 1; c.gridy = 0; toolbar.add(reset,c);
-        c.gridx = 2; c.gridy = 0; toolbar.add(pause,c);
-        c.gridx = 3; c.gridy = 0; toolbar.add(cursorSelector,c);
+
+
+        c.gridx = 0; c.gridy = 1; toolbar.add(clear,c);
+        c.gridx = 1; c.gridy = 1; toolbar.add(reset,c);
+        c.gridx = 2; c.gridy = 1; toolbar.add(pause,c);
+        c.gridx = 3; c.gridy = 0; toolbar.add(new JLabel("Cursor"),c);
+        c.gridx = 4; c.gridy = 0; toolbar.add(new JLabel("World Mode"),c);
+        c.gridx = 3; c.gridy = 1; toolbar.add(cursorSelector,c);
+        c.gridx = 4; c.gridy = 1; toolbar.add(simSelector,c);
         toolbar.setPreferredSize(toolbar.getPreferredSize());
 
         c2.gridx = 0; c2.gridy = 0; fr.add(toolbar,c2);
@@ -223,6 +243,7 @@ public class LifeWorld extends JPanel implements Runnable{
 
         }
     }
+
     public synchronized void populateWorld(){
         Random r = new Random();
         for(int i = 0;i<even.width;i++){
@@ -240,19 +261,24 @@ public class LifeWorld extends JPanel implements Runnable{
             }
         }
     }
-    public synchronized void plantSeeds(){
-        ArrayList<Class> seeds = new ArrayList<Class>();
-        for(Class cl: species){
-            if(cl.getSimpleName().toUpperCase().contains("SEED")){
-                seeds.add(cl);
-            }
+    public Class getSeedType(int simMode){
+        switch(simMode){
+            case CONWAY_ANIMAL:
+            case CONWAY_CLEAN:
+                return ConwaySeed.class;
+            case KIRE:
+            default:
+                return KireSeed.class;
         }
+    }
+    public synchronized void plantSeeds(){
+        plantSeeds(getSeedType(simulationSetup));
+    }
+    public synchronized void plantSeeds(Class cl){
         try {
             for (int i = 0; i < even.width; i++) {
                 for (int j = 0; j < even.height; j++) {
-                    for (Class cl : seeds) {
-                        even.put(i,j,(LifeObject)cl.newInstance());
-                    }
+                    even.put(i,j,(LifeObject)cl.newInstance());
                 }
             }
         }catch(Exception e){}
