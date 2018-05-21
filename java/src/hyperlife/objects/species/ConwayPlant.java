@@ -4,10 +4,11 @@ import hyperlife.Action;
 import hyperlife.LifeGrid;
 import hyperlife.objects.LifeObject;
 import hyperlife.objects.Plant;
+import hyperlife.objects.Sprout;
 
 import java.awt.*;
 
-public class ConwayPlant extends Plant{
+public class ConwayPlant extends Sprout {
     public Color getColor(){
         return Color.GREEN;
     }
@@ -36,5 +37,9 @@ public class ConwayPlant extends Plant{
     public void grow(LifeGrid surroundings){}
     public int getGrowthRadius(){
         return 0;
+    }
+    public Class[] getFoodTypes(){return new Class[]{};}
+    public LifeObject consume(LifeObject l){
+        return null;
     }
 }

@@ -6,7 +6,7 @@ import javafx.util.Pair;
 
 import java.util.Random;
 
-public abstract class Animal extends LifeForm{
+public abstract class Animal extends LifeForm implements Consumer{
     protected int deltaX;
     protected int deltaY;
     public Animal(){
@@ -19,20 +19,6 @@ public abstract class Animal extends LifeForm{
             case 3: deltaX = 0; deltaY = -1; break;
         }
     }
-    /**
-     * @param l the lifeobject it's consuming
-     * @return a lifeobject if it produces one after it consumes something. May return null if it produces nothing after consuming.
-     */
-    public abstract LifeObject consume(LifeObject l);
-    public boolean wantsToConsume(LifeObject l){
-        for(Class cl: getFoodTypes()){
-            if(l.getClass().equals(cl)){
-                return true;
-            }
-        }
-        return false;
-    }
-    public abstract Class[] getFoodTypes();
     protected Action getDirection(int deltaX, int deltaY){
         if(deltaX == 0 && deltaY == 0) {
             return Action.NOTHING;

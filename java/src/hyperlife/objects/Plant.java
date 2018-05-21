@@ -4,7 +4,7 @@ package hyperlife.objects;
 
 import hyperlife.LifeGrid;
 
-public abstract class Plant extends LifeForm{
+public abstract class Plant extends LifeForm {
     public Plant(){
         super();
         radius = 1;

@@ -37,16 +37,15 @@ public class LifeWorld extends JPanel implements Runnable{
     private static final Class[] species;
     private Class cursor;
     private final int width,height;
+    private int simulationSetup;
     static{
         String packageName = "hyperlife/objects/species";
 
         File[] speciesFiles = new File("src/" + packageName).listFiles();
-        System.out.println(speciesFiles.length);
         Class[] spec = new Class[speciesFiles.length];
         try {
             for (int i = 0; i < speciesFiles.length; i++) {
                 spec[i] = Class.forName(packageName.replace("/", ".") + "." + speciesFiles[i].getName().replace(".java",""));
-                System.out.println(spec[i].getName());
             }
 
         }catch(Exception e){}
@@ -60,6 +59,7 @@ public class LifeWorld extends JPanel implements Runnable{
         this.width = width;
         this.height = height;
         paused = false;
+        simulationSetup = 0;
         resetGrid();
 
         fr = new JFrame();
@@ -72,7 +72,6 @@ public class LifeWorld extends JPanel implements Runnable{
         GridBagConstraints c2 = new GridBagConstraints();
 
         JPanel toolbar = new JPanel();
-
 
         JButton clear = new JButton("CLEAR");
         clear.addActionListener(new ActionListener(){
@@ -115,8 +114,6 @@ public class LifeWorld extends JPanel implements Runnable{
             }
         });
 
-
-
         cursor = species[0];
         String[] names = new String[species.length];
         for(int i = 0;i<species.length;i++){
@@ -130,22 +127,36 @@ public class LifeWorld extends JPanel implements Runnable{
             }
         });
 
+        String[] simNames = {"Conway","Conway + Animals","Kire","Flowers"};
+
 
 
         MouseAdapter mouse = new MouseAdapter() {
-            private boolean drawEnabled = false;
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                drawEnabled = true;
-                System.out.println("clicked");
+                try {
+                    LifeObject lo = (LifeObject)cursor.newInstance();
+                    Point pt = fr.getLocation();
+                    int xcd = (int)(e.getX()-pt.getX())/IMAGE_SCALAR;
+                    int ycd = (int)(e.getY()-pt.getY())/IMAGE_SCALAR;
+
+                    even.put(xcd,ycd,lo);
+                    odd.put(xcd,ycd,lo);
+
+                    repaint();
+
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                drawEnabled = false;
+
             }
+
 
             @Override
             public synchronized void mouseDragged(MouseEvent e) {
@@ -169,10 +180,6 @@ public class LifeWorld extends JPanel implements Runnable{
         addMouseListener(mouse);
         addMouseMotionListener(mouse);
 
-
-
-
-
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0; c.gridy = 0; toolbar.add(clear,c);
         c.gridx = 1; c.gridy = 0; toolbar.add(reset,c);
@@ -180,11 +187,8 @@ public class LifeWorld extends JPanel implements Runnable{
         c.gridx = 3; c.gridy = 0; toolbar.add(cursorSelector,c);
         toolbar.setPreferredSize(toolbar.getPreferredSize());
 
-        c2.gridx = 0; c2.gridy = 0;
-        fr.add(toolbar,c2);
-
-        c2.gridx = 0; c2.gridy = 1;
-        fr.add(this,c2);
+        c2.gridx = 0; c2.gridy = 0; fr.add(toolbar,c2);
+        c2.gridx = 0; c2.gridy = 1; fr.add(this,c2);
         fr.pack();
         fr.setVisible(true);
 
@@ -211,8 +215,9 @@ public class LifeWorld extends JPanel implements Runnable{
                     repaint();
                     last = current;
                 }
+
                 if(step% 100 == 0){
-                    //System.out.println(System.currentTimeMillis() - init);
+                    System.out.println(System.currentTimeMillis() - init);
                 }
             }
 

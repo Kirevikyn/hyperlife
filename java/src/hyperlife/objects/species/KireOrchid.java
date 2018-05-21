@@ -4,13 +4,12 @@ import hyperlife.Action;
 import hyperlife.LifeGrid;
 import hyperlife.objects.LifeObject;
 import hyperlife.objects.Plant;
-import hyperlife.objects.Sprout;
 
 import java.awt.*;
 import java.util.Random;
 
-public class ConwayOrchid extends Sprout{
-    public ConwayOrchid(){
+public class KireOrchid extends Plant {
+    public KireOrchid(){
         super();
         health = 1;
     }
@@ -27,13 +26,13 @@ public class ConwayOrchid extends Sprout{
         return Color.BLACK;
     }
     public int getGrowthRadius(){
-        return 3;
+        return 4;
     }
     public void grow(LifeGrid surroundings){
         for(int i = 0;i<surroundings.width;i++){
             for(int j = 0;j<surroundings.height;j++){
                 if(new Random().nextDouble() > .66){
-                    surroundings.put(i,j,new ConwayPlant());
+                    surroundings.put(i,j,new KirePlant());
                 }
             }
         }

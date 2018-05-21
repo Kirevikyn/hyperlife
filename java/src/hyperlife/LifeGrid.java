@@ -44,7 +44,7 @@ public class LifeGrid {
     public List<LifeObject> get(int x, int y){
         if(x < 0 || x >= width || y < 0 || y >= height){
             List<LifeObject> res = new ArrayList<LifeObject>();
-            res.add(new Wall());
+            res.add(new Rock());
             return res;
         }else{
             return (List<LifeObject>) grid[x][y];
@@ -158,23 +158,23 @@ public class LifeGrid {
                     if (l instanceof LifeForm) {
                         if(l instanceof Animal) {
                             for (LifeObject lo : objs) {
-                                if (lo != l && ((Animal) l).wantsToConsume(lo) && (!(lo instanceof LifeForm) || ((LifeForm) lo).isAlive())){
-                                    LifeObject poop = ((Animal) l).consume(lo);
+                                if (lo != l && ((Consumer) l).wantsToConsume(lo) && (!(lo instanceof LifeForm) || ((LifeForm) lo).isAlive())) {
+                                    LifeObject poop = ((Consumer) l).consume(lo);
                                     objs.remove(lo);
                                     ind--;
-                                    if(poop != null){
+                                    if (poop != null) {
                                         objs.add(poop);
                                         ind++;
                                     }
                                     break;
                                 }
                             }
-                            if(((Animal) l).reproduce()){
-                                try {
-                                    objs.add(l.getClass().newInstance());
-                                }catch(Exception e){}
-                                ind++;
-                            }
+                        }
+                        if(l instanceof Animal && ((Animal) l).reproduce()){
+                            try {
+                                objs.add(l.getClass().newInstance());
+                            }catch(Exception e){}
+                            ind++;
                         }
                         if (!((LifeForm) l).isAlive()) {
                             objs.remove(ind);
@@ -208,21 +208,22 @@ public class LifeGrid {
         if(scalarY!=scalar){
             scalar = 1;
         }
-
         for(int i = 0;i<width;i++) {
             for (int j = 0; j < height; j++) {
+                int color = Color.WHITE.getRGB();
+                List<LifeObject> objs = get(i,j);
+                if(objs.size() > 0){
+                    for(LifeObject l: objs){
+                        if(!(l instanceof Seed)){
+                            color = l.getColor().getRGB();
+                            break;
+                        }
+                    }
+                }
                 for(int i2 = i*scalar;i2<i*scalar+scalar;i2++){
                     for(int j2 = j*scalar;j2<j*scalar+scalar;j2++){
-                        img.setRGB(i2,j2, Color.WHITE.getRGB());
-                        List<LifeObject> objs = get(i,j);
-                        if(objs.size() > 0){
-                            for(LifeObject l: objs){
-                                if(!(l instanceof Seed)){
-                                    img.setRGB(i2,j2,l.getColor().getRGB());
-                                    break;
-                                }
-                            }
-                        }
+                        img.setRGB(i2,j2, color);
+
                     }
                 }
 

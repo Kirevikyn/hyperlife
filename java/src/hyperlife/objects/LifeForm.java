@@ -13,4 +13,6 @@ public abstract class LifeForm extends LifeObject {
     }
     public abstract Action update(LifeGrid surroundings);
 
+
+
 }
