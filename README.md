@@ -37,13 +37,9 @@ More documentation coming soon<sup>tm</sup>
 
 ## TODO
 
-* Make plants "growable" so they can transform into other plants at certain points in time
-   * Make certain animals able to poop seeds that allow for repopulation of a conway forest
-* Make a way for plants to grow into more than 1 pixel
-* Add mouse option to redraw pixels of choice
+* Make Animal move along wall when the next pixel in its path is a wall
 * Add generation jump to skip rendering for some number of generations
 * Add static initialization of LifeForm variables
-* Statically initialize the available species
 * Mechanics
     * Add animal/plant realtionships to model bees/flowers
     * Add a seed that has to be composted by Dung before it can grow
