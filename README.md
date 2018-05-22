@@ -3,32 +3,77 @@
 
 
 
-### Game rules:
+### Game Mechancis:
 
-Every cycle, every LifeForms updates
-* LifeForms die if they have 0 health
+* The world is composed of a grid which contains LifeObjects
 
+* LifeObjects
+	* occupy a position in the world
+	* are able to occupy the same grid position as any number of other LifeObjects of other types
+	* by default are able to occupy the same position as any number of other LifeObject of the same type (but some LifeObjects may not be able to)
+* DecayingObjects	
+	* decay over a period of time and are eventually removed from the grid
+* Walls (interface)
+	* cannot be traversed by other LifeObjects
+* LifeForms
+	* are LifeObjects
+	* die if they have 0 health
+	* react to or make changes to the environment
+* Consumers (interface)
+	* can consume other LifeObjects, up to one per turn
+	* can produce a LifeObject as output after consuming something which is placed at the consumer's current position
+	* cannot consume dead LifeForms
+	* cannot consume themselves
 * Animals
+	* are LifeForms
+	* are Consumers
     * can move
-    * can consume other LifeObjects
-        * can produce waste after consuming another LifeObject
     * can reproduce
+	* leave Carcasses when they die
+* Herbivores
+	* are Animals
+	* eat Plants
+* Carnivores
+	* are Animals
+	* eat Animals and Carcasses
 * Plants
+	* are LifeForms
+	* can be Consumers
     * can't move
-    * Seeds grow into plants based on conditions
-    * Seeds remain after the plant grows
-* Non-rival LifeObjects can occupy the same position
+	* grow based on conditions
+* Sprouts
+	* are Plants
+	* can grow into other Plants
+* Seeds 
+	* are Plants
+	* grow into Sprouts
+	* are invisible (since they're underground)
+	* aren't intended to be eaten
+	
+	
+* Every turn, every LifeObject updates
+	* Consumers may consume
+	* DecayingObjects decay
+	* Animals may move
+	* Animals may reproduce
+	* Plants may grow
 
 ### How to mess with the code
 
-To support a new species, extend some subclass of LifeObject in the Species package.
+To support a new species
 
-ConwayPlant/ConwaySeed is an example of a Seed/Plant relationship
-WeakPredator is a good example of an Animal
+1. Extend some subclass of LifeObject and put this new class in the Species package.
 
-To add a new species to the simulation, edit LifeWorld.populateWorld() 
+	ConwayPlant/ConwaySeed is an example of a Seed/Plant relationship
+	ConwayPredator is a good example of an Animal
 
-To change the simulation size, edit the main method in LifeWorld (which is the main class).
+2. To add the new species to the simulation,
+	* make a new final int to represent the simulationType in LifeWorld
+	* add the simulation name to LifeWorld.simNames
+	* edit LifeWorld.plantSeeds() to populate the world with seeds if necessary
+	* edit LifeWorld.populateWorld() to populate the world with non-Seed LifeObjects
+
+To change the simulation size, edit the main method in LifeWorld (which is the main class). Smaller simulations are faster.
 
 
 
@@ -38,11 +83,10 @@ More documentation coming soon<sup>tm</sup>
 ## TODO
 
 * Make Animal move along wall when the next pixel in its path is a wall
-* Add generation jump to skip rendering for some number of generations
-* Add static initialization of LifeForm variables
+* Add generation jump to skip rendering for some number of generations (may not really be possible - depends on how long rendering really takes)
+* Add static initialization of LifeForm variables + external Properties for balancing
 * Mechanics
     * Add animal/plant realtionships to model bees/flowers
-    * Add a seed that has to be composted by Dung before it can grow
 
 ### Extra Notes
 

@@ -32,7 +32,7 @@ public class BasicHerbivore extends Herbivore {
         if(l instanceof BasicFruit){
             health += BASIC_FRUIT_NUTRIENTS;
         }
-        if(new Random().nextDouble() > .8) {
+        if(new Random().nextDouble() > .76) {
             return new BasicSeed();
         }
         if(new Random().nextDouble() > .9) {
