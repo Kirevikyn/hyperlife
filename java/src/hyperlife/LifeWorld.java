@@ -10,17 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Random;
 
-/**
- * every cycle, every lifeform updates
- *     all lifeforms either live or die
- *     some lifeforms move
- *         some lifeforms need to consume other lifeforms which means moving onto that lifeform's position
- *         if two lifeforms move to the same position,
- *             if both want to consume the other, the one with less health dies
- *             if
- */
-
-
 
 public class LifeWorld extends JPanel implements Runnable{
     private BufferedImage img;
@@ -34,13 +23,15 @@ public class LifeWorld extends JPanel implements Runnable{
     private final Class[] species;
     private Class cursor;
     private final int width,height;
+    private final boolean ONLY_WHILE_VISIBLE = false;
 
 
     private final int CONWAY_CLEAN = 0;
     private final int CONWAY_ANIMAL = 1;
     private final int KIRE = 2;
     private final int BASIC_FLOWER = 3;
-    private final String[] simNames = {"Conway","Conway + Animals","Kire","Flower"};
+    private final int WALL_TEST = 4;
+    private final String[] simNames = {"Conway","Conway + Animals","Kire","Flower","Wall Test"};
     private int simulationSetup;
 
 
@@ -65,7 +56,7 @@ public class LifeWorld extends JPanel implements Runnable{
         simulationSetup = CONWAY_CLEAN;
         resetGrid();
 
-        fr = new JFrame();
+        fr = new JFrame("Hyperlife");
         fr.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         setPreferredSize(new Dimension(width*IMAGE_SCALAR,height*IMAGE_SCALAR));
@@ -143,17 +134,15 @@ public class LifeWorld extends JPanel implements Runnable{
             }
         });
 
-
-
         MouseAdapter mouse = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 try {
                     LifeObject lo = (LifeObject)cursor.newInstance();
-                    Point pt = fr.getLocation();
-                    int xcd = (int)(e.getX()-pt.getX())/IMAGE_SCALAR;
-                    int ycd = (int)(e.getY()-pt.getY())/IMAGE_SCALAR;
+                    Point pt = getParent().getParent().getParent().getLocation();//getLocationOnScreen();//fr.getLocationOnScreen();
+                    int xcd = (int)(e.getX())/IMAGE_SCALAR;
+                    int ycd = (int)(e.getY())/IMAGE_SCALAR;
 
                     even.put(xcd,ycd,lo);
                     odd.put(xcd,ycd,lo);
@@ -171,15 +160,13 @@ public class LifeWorld extends JPanel implements Runnable{
 
             }
 
-
             @Override
             public synchronized void mouseDragged(MouseEvent e) {
                 super.mouseMoved(e);
                 try {
                     LifeObject lo = (LifeObject)cursor.newInstance();
-                    Point pt = fr.getLocation();
-                    int xcd = (int)(e.getX()-pt.getX())/IMAGE_SCALAR;
-                    int ycd = (int)(e.getY()-pt.getY())/IMAGE_SCALAR;
+                    int xcd = (int)(e.getX())/IMAGE_SCALAR;
+                    int ycd = (int)(e.getY())/IMAGE_SCALAR;
 
                     even.put(xcd,ycd,lo);
                     odd.put(xcd,ycd,lo);
@@ -195,7 +182,6 @@ public class LifeWorld extends JPanel implements Runnable{
         addMouseMotionListener(mouse);
 
         c.fill = GridBagConstraints.HORIZONTAL;
-
 
         c.gridx = 0; c.gridy = 1; toolbar.add(clear,c);
         c.gridx = 1; c.gridy = 1; toolbar.add(reset,c);
@@ -239,10 +225,8 @@ public class LifeWorld extends JPanel implements Runnable{
                     System.out.println(System.currentTimeMillis() - init);
                 }
             }
-
         }
     }
-
     public synchronized void populateWorld(){
         Random r = new Random();
         switch(simulationSetup){
@@ -271,6 +255,14 @@ public class LifeWorld extends JPanel implements Runnable{
                     }
                 }
                 break;
+            case WALL_TEST:
+                for(int i = 5;i<=20;i++){
+                    even.put(i,5,new Rock());
+                    even.put(i,20,new Rock());
+                    even.put(5,i,new Rock());
+                    even.put(20,i,new Rock());
+                }
+                break;
             case KIRE:
                 break;
             case BASIC_FLOWER:
@@ -291,6 +283,8 @@ public class LifeWorld extends JPanel implements Runnable{
                 return ConwaySeed.class;
             case BASIC_FLOWER:
                 return null;
+            case WALL_TEST:
+                return ConwaySeed.class;
             case KIRE:
             default:
                 return KireSeed.class;
@@ -321,7 +315,6 @@ public class LifeWorld extends JPanel implements Runnable{
         }
         step++;
     }
-
     @Override
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
@@ -333,8 +326,6 @@ public class LifeWorld extends JPanel implements Runnable{
         }
         g.drawImage(img,0,0,this);
     }
-
-
     public static void main(String[] args){
         new LifeWorld(200,200).run();
     }

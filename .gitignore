@@ -1,4 +1,5 @@
+cpp/
+uml/
 *.class
 .idea
-cpp/
 *.mdj

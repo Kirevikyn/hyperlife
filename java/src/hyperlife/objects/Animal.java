@@ -56,13 +56,10 @@ public abstract class Animal extends LifeForm implements Consumer{
             deltaX = nearest.getKey();
             deltaY = nearest.getValue();
             //normalizeDeltas();
-        }else if(surroundings.isWall(deltaX + (surroundings.width-1)/2,deltaY + (surroundings.height-1)/2)){//TODO - MAKE IT MOVE ALONG WALL
-            switch(new Random().nextInt(4)){
-                case 0: deltaX = 1; deltaY = 0; break;
-                case 1: deltaX = -1; deltaY = 0; break;
-                case 2: deltaX = 0; deltaY = 1; break;
-                case 3: deltaX = 0; deltaY = -1; break;
-            }
+        }else if(surroundings.isWall(deltaX + (surroundings.width-1)/2,deltaY + (surroundings.height-1)/2)){//TODO - make animals move along wall rather than bouncing
+            //make sure to factor in corner cases
+            deltaX *= -1;
+            deltaY *= -1;
         }else if(nearest == null && deltaX == 0 && deltaY == 0){
 
             switch(new Random().nextInt(4)){

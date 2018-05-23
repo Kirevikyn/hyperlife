@@ -2,6 +2,7 @@ package hyperlife;
 
 import hyperlife.objects.*;
 import hyperlife.objects.species.Carcass;
+import hyperlife.objects.species.Rock;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -60,7 +61,7 @@ public class LifeGrid {
         return false;
     }
     public void put(int x, int y, LifeObject l){
-        if(l.canStack() || (!l.canStack() && !contains(x,y,l.getClass()))) {
+        if(!isWall(x,y) && (l.canStack() || (!l.canStack() && !contains(x,y,l.getClass())))) {
             ((List<LifeObject>) grid[x][y]).add(l);
         }
     }

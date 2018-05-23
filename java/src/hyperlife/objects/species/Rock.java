@@ -1,7 +1,9 @@
-package hyperlife.objects;
+package hyperlife.objects.species;
 
 import hyperlife.Action;
 import hyperlife.LifeGrid;
+import hyperlife.objects.LifeObject;
+import hyperlife.objects.Wall;
 
 import java.awt.*;
 
